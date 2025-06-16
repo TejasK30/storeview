@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  user
+  store_owner
+  system_admin
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(60)
+  email     String   @unique @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  address   String   @db.VarChar(400)
+  role      Role     @default(user)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // One-to-one for store owners
+  store Store? @relation("StoreOwner")
+
+  // Ratings given by this user
+  ratingsGiven Rating[] @relation("UserRatings")
+
+  // Users created by admin
+  createdUsers User[] @relation("CreatedBy")
+  createdBy    User?  @relation("CreatedBy", fields: [createdById], references: [id])
+  createdById  Int?   @map("created_by_id")
+
+  // Stores created by admin
+  createdStores Store[] @relation("StoreCreatedBy")
+
+  @@map("users")
+}
+
+model Store {
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(255)
+  address   String   @db.VarChar(400)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // store owner 
+  owner   User @relation("StoreOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId Int  @unique @map("owner_id")
+
+  ratings     Rating[] @relation("StoreRatings")
+  createdBy   User?    @relation("StoreCreatedBy", fields: [createdById], references: [id])
+  createdById Int?     @map("created_by_id")
+
+  @@map("stores")
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  rating    Int
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  //ratings by user
+  user    User  @relation("UserRatings", fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int   @map("user_id")
+  store   Store @relation("StoreRatings", fields: [storeId], references: [id], onDelete: Cascade)
+  storeId Int   @map("store_id")
+
+  // One rating per user per store
+  @@unique([userId, storeId])
+  @@map("ratings")
+}
