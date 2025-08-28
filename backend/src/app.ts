@@ -34,7 +34,7 @@ app.use("/api/admin", adminRoutes)
 app.use("/api/store", storeRoutes)
 
 app.get("/", (req, res) => {
-  res.send("Storeview Node.js Backend is running with Prisma ORM.")
+  res.send("Storeview Node.js backend")
 })
 
 app.listen(process.env.PORT, () =>

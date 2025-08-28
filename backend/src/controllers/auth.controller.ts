@@ -27,21 +27,20 @@ export const registerUser = async (
         password: hashedPassword,
         role,
         address,
-        store:
-          role === "store_owner"
-            ? {
-                create: {
-                  name: storeName!,
-                  email: email,
-                  address: address,
-                  createdBy: {
-                    connect: { id: 0 },
-                  },
-                },
-              }
-            : undefined,
       },
     })
+
+    // If store owner registered → create store linked to them
+    if (role === "store_owner") {
+      await prisma.store.create({
+        data: {
+          name: storeName!,
+          email,
+          address,
+          owner: { connect: { id: newUser.id } },
+        },
+      })
+    }
 
     const token = jwt.sign(
       { userId: newUser.id },

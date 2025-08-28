@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "watch": "tsc -w",
-    "start": "node dist/app.js",
-    "server": "nodemon dist/app.js",
-    "dev": "concurrently \"npm run watch\" \"npm run server\"",
+    "dev": "nodemon",
     "migrate": "prisma migrate dev --name init",
     "generate": "prisma generate "
   },
@@ -25,7 +22,6 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^24.0.1",
     "@types/pg": "^8.15.4",
-    "concurrently": "^9.1.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2"
   },

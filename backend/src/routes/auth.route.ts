@@ -20,7 +20,7 @@ router.post("/login", loginUser)
 router.get("/profile", authenticate, getProfile)
 
 // logout user
-router.get("/logout", logout)
+router.get("/logout", authenticate, logout)
 
 // update user profile
 router.put("/updateprofile", authenticate, updateUser)
