@@ -42,7 +42,7 @@ export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
   setFilters,
   type,
 }) => (
-  <div className="flex gap-4 mb-6">
+  <div className="flex flex-col w-full md:flex-row gap-4 mb-6">
     {/* Search input */}
     <div className="relative flex-1">
       <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
