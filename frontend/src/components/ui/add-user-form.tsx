@@ -76,82 +76,80 @@ export const AddUserForm: React.FC<AddUserFormProps> = ({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input id="name" {...register("name")} />
-        {errors.name && (
-          <p className="text-sm text-red-500">{errors.name.message}</p>
-        )}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 max-h-[80vh] overflow-y-auto px-2"
+    >
+      {/* User info fields */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" {...register("name")} />
+          {errors.name && (
+            <p className="text-sm text-red-500">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" {...register("email")} />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
+        </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" {...register("email")} />
-        {errors.email && (
-          <p className="text-sm text-red-500">{errors.email.message}</p>
-        )}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input id="password" type="password" {...register("password")} />
+          {errors.password && (
+            <p className="text-sm text-red-500">{errors.password.message}</p>
+          )}
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
-        <Input id="password" type="password" {...register("password")} />
-        {errors.password && (
-          <p className="text-sm text-red-500">{errors.password.message}</p>
-        )}
+        <div className="space-y-2">
+          <Label htmlFor="role">Role</Label>
+          <Select
+            value={role}
+            onValueChange={(value) => {
+              const event = {
+                target: { name: "role", value },
+              } as unknown as React.ChangeEvent<HTMLInputElement>
+              return register("role").onChange(event)
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select role" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="user">User</SelectItem>
+              <SelectItem value="store_owner">Store Owner</SelectItem>
+              <SelectItem value="system_admin">System Admin</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.role && (
+            <p className="text-sm text-red-500">{errors.role.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="address">Address</Label>
-        <Textarea id="address" {...register("address")} />
+        <Textarea id="address" {...register("address")} rows={2} />
         {errors.address && (
           <p className="text-sm text-red-500">{errors.address.message}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="role">Role</Label>
-        <Select
-          value={role}
-          onValueChange={(value) => {
-            const event = {
-              target: { name: "role", value },
-            } as unknown as React.ChangeEvent<HTMLInputElement>
-            return register("role").onChange(event)
-          }}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="user">User</SelectItem>
-            <SelectItem value="store_owner">Store Owner</SelectItem>
-            <SelectItem value="system_admin">System Admin</SelectItem>
-          </SelectContent>
-        </Select>
-        {errors.role && (
-          <p className="text-sm text-red-500">{errors.role.message}</p>
-        )}
-      </div>
-
-      {/* Store fields only if role is store_owner */}
+      {/* Store Owner extra fields */}
       {role === "store_owner" && (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="storeName">Store Name</Label>
             <Input id="storeName" {...register("storeName")} />
             {errors.storeName && (
               <p className="text-sm text-red-500">{errors.storeName.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="storeAddress">Store Address</Label>
-            <Input id="storeAddress" {...register("storeAddress")} />
-            {errors.storeAddress && (
-              <p className="text-sm text-red-500">
-                {errors.storeAddress.message}
-              </p>
             )}
           </div>
 
@@ -164,7 +162,17 @@ export const AddUserForm: React.FC<AddUserFormProps> = ({
               </p>
             )}
           </div>
-        </>
+
+          <div className="md:col-span-2 space-y-2">
+            <Label htmlFor="storeAddress">Store Address</Label>
+            <Input id="storeAddress" {...register("storeAddress")} />
+            {errors.storeAddress && (
+              <p className="text-sm text-red-500">
+                {errors.storeAddress.message}
+              </p>
+            )}
+          </div>
+        </div>
       )}
 
       <Button type="submit" disabled={loading} className="w-full">
