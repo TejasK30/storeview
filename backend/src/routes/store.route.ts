@@ -1,32 +1,18 @@
 import { Router } from "express"
-import {
-  getStoreOverview,
-  getStoreRatings,
-  getStores,
-  getUserReviewsController,
-  submitRatingController,
-  updateRating,
-} from "../controllers/store.controller"
-import { authenticate } from "../middlewares/auth"
+import StoreController from "../controllers/store.controller"
+import { authenticate, authorizeRole } from "../middlewares/auth"
 
 const router = Router()
 
-// store overview for owner
-router.get("/overview", authenticate, getStoreOverview)
+const storeController = new StoreController();
 
-// get ratings for a specific store
-router.get("/:storeId/ratings", authenticate, getStoreRatings)
+// store overview for owner
+router.get("/overview", authenticate, authorizeRole("store_owner"),storeController.getStoreOverview)
 
 // get all stores with pagination, search, and sorting
-router.get("/getstores", authenticate, getStores)
+router.get("/", authenticate, storeController.getStores)
 
-// get reviews by user ID
-router.get("/reviews/user/:userId", authenticate, getUserReviewsController)
-
-// submit a new rating
-router.post("/reviews/submit", authenticate, submitRatingController)
-
-// update an existing rating
-router.put("/reviews/edit", authenticate, updateRating)
+// add store
+router.post("/", authenticate, authorizeRole("system_admin"), storeController.addStore)
 
 export default router

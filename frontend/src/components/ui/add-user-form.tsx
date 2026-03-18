@@ -51,7 +51,7 @@ export const AddUserForm: React.FC<AddUserFormProps> = ({
   const onSubmit = async (formData: AddUserFormData) => {
     setLoading(true)
     try {
-      const response = await api.post("/admin/users", {
+      const response = await api.post("/users", {
         ...formData,
         storeName: role === "store_owner" ? formData.storeName : undefined,
         storeAddress:

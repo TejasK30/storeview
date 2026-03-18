@@ -4,7 +4,7 @@ import { toast } from "sonner"
 
 export const getUsers = async (url: string, params?: URLSearchParams) => {
   try {
-    const response = await api.get(`/admin${url}`, { params })
+    const response = await api.get(`${url}`, { params })
     return response.data
   } catch (error) {
     const msg =

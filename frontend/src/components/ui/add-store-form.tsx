@@ -56,7 +56,7 @@ export const AddStoreForm: React.FC<AddStoreFormProps> = ({
         },
       }
 
-      const response = await api.post("/admin/stores", payload)
+      const response = await api.post("/store", payload)
 
       if (response.status !== 200 && response.status !== 201) {
         toast.error(response.data?.message || "Failed to create store")

@@ -7,7 +7,7 @@ import {
 import { api } from "./api"
 import { AxiosError } from "axios"
 
-export async function getStats() {
+export async function getAdminDashboardStats() {
   const response = await api.get("/admin/stats")
 
   return response.data
@@ -20,7 +20,7 @@ export async function getStoreRatings(
   limit = 10
 ): Promise<StoreRatingsResponse> {
   const res = await api.get(
-    `/store/${storeId}/ratings?page=${page}&limit=${limit}`
+    `/review/store/${storeId}?page=${page}&limit=${limit}`
   )
 
   console.log(res.data)
@@ -52,9 +52,7 @@ export async function getStores({
     ...(sortByRating && { sortByRating }),
   })
 
-  console.log(sortByRating)
-
-  const res = await api.get(`/store/getstores?${params}`)
+  const res = await api.get(`/store?${params}`)
   return res.data
 }
 
@@ -65,7 +63,7 @@ export const getUserReviews = async (
   limit: number
 ): Promise<{ reviews: Review[] }> => {
   const res = await api.get(
-    `/store/reviews/user/${userId}?page=${page}&limit=${limit}`
+    `/review/user/${userId}?page=${page}&limit=${limit}`
   )
 
   return res.data
@@ -77,7 +75,7 @@ export const submitRating = async (
   rating: number
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const res = await api.post(`/store/reviews/submit`, {
+    const res = await api.post(`/review`, {
       storeId,
       rating,
     })
@@ -97,7 +95,7 @@ export const updateRating = async (
   reviewId: number,
   rating: number,
 ): Promise<{ success: boolean; message: string }> => {
-  const response = await api.put(`/store/reviews/edit`, {
+  const response = await api.put(`/review`, {
     reviewId,
     rating,
   })

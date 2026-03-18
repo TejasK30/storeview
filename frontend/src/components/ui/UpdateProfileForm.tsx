@@ -37,7 +37,7 @@ export const UpdateProfileForm = ({ onClose }: Props) => {
 
   const mutation = useMutation({
     mutationFn: async (data: UpdateProfileFormValues) => {
-      const res = await api.put("/auth/updateprofile", data)
+      const res = await api.put("/auth/profile", data)
       return res.data
     },
     onSuccess: () => {

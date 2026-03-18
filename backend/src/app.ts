@@ -4,8 +4,10 @@ import "dotenv/config"
 import cors from "cors"
 
 import authRoutes from "./routes/auth.route"
-import adminRoutes from "./routes/admin.routes"
+import usersRoutes from "./routes/user.route"
 import storeRoutes from "./routes/store.route"
+import reviewRoutes from "./routes/review.route"
+import adminRoutes from "./routes/admin.routes"
 
 declare global {
   namespace Express {
@@ -30,8 +32,10 @@ app.use(
   })
 )
 app.use("/api/auth", authRoutes)
+app.use("/api/users", usersRoutes)
 app.use("/api/admin", adminRoutes)
 app.use("/api/store", storeRoutes)
+app.use("/api/review", reviewRoutes)
 
 app.get("/", (req, res) => {
   res.send("Storeview Node.js backend")

@@ -24,7 +24,7 @@ import Navbar from "@/components/ui/Navbar"
 import { useAuth } from "@/hooks/use-auth"
 import { useDebounce } from "@/hooks/useDebounce"
 import { getUsers } from "@/lib/services/adminService"
-import { getStats, getStores } from "@/lib/services/storeService"
+import { getAdminDashboardStats, getStores } from "@/lib/services/storeService"
 import { Store, User } from "@/lib/types"
 
 export default function AdminDashboard() {
@@ -61,7 +61,7 @@ export default function AdminDashboard() {
   // get dashboard stats query
   const { data: statsData, refetch: refetchStats } = useQuery({
     queryKey: ["stats"],
-    queryFn: () => getStats(),
+    queryFn: () => getAdminDashboardStats(),
     enabled: !!user,
   })
 

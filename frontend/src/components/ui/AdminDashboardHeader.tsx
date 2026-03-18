@@ -12,18 +12,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useState } from "react"
 
 type AdminDashboardHeaderProps = {
   onRefresh: () => void
 }
 
 const AdminDashboardHeader = ({ onRefresh }: AdminDashboardHeaderProps) => {
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
   return (
     <div className="flex items-center justify-between">
       <h1 className="text-3xl font-bold">Admin Dashboard</h1>
       <div className="flex gap-2">
         {/* Add User Dialog */}
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">
               <Plus className="h-4 w-4 mr-2" />
@@ -34,12 +38,12 @@ const AdminDashboardHeader = ({ onRefresh }: AdminDashboardHeaderProps) => {
             <DialogHeader>
               <DialogTitle>Add New User</DialogTitle>
             </DialogHeader>
-            <AddUserForm onClose={() => {}} onSuccess={onRefresh} />
+            <AddUserForm  onClose={() => {setIsDialogOpen(false)}} onSuccess={onRefresh} />
           </DialogContent>
         </Dialog>
 
         {/* Add Store Dialog */}
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button variant="outline">
               <Plus className="h-4 w-4 mr-2" />
@@ -50,7 +54,7 @@ const AdminDashboardHeader = ({ onRefresh }: AdminDashboardHeaderProps) => {
             <DialogHeader>
               <DialogTitle>Add New Store</DialogTitle>
             </DialogHeader>
-            <AddStoreForm onClose={() => {}} onSuccess={onRefresh} />
+            <AddStoreForm onClose={() => {setIsDialogOpen(false)}} onSuccess={onRefresh} />
           </DialogContent>
         </Dialog>
       </div>

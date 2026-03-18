@@ -41,7 +41,7 @@ export default function StoreOwnerDashboard() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["store-ratings", user?.id, page],
-    queryFn: () => getStoreRatings(user?.id ?? "", page, limit),
+    queryFn: () => getStoreRatings(user?.storeId ?? "", page, limit),
     enabled: !!user?.id,
     placeholderData: keepPreviousData,
   })

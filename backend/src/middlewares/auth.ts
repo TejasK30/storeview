@@ -2,9 +2,11 @@ import { prisma } from "../db"
 import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 
+type Role = "system_admin" | "store_owner" | "user"
+
 interface JwtPayload {
   userId: string
-  role: "system_admin" | "store_owner" | "user"
+  role: Role
 }
 
 export const authenticate = async (
@@ -32,5 +34,30 @@ export const authenticate = async (
     next()
   } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" })
+  }
+}
+
+export const authorizeRole = (requiredRoles: Role | Role[]) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    try {
+      if (req.user) {
+        const userRole: Role = req.user.role as Role
+        const allowedRoles = Array.isArray(requiredRoles)
+          ? requiredRoles
+          : [requiredRoles]
+
+        if (!allowedRoles.includes(userRole)) {
+          res
+            .status(403)
+            .json({ message: "Forbidden: insufficient privileges" })
+          return
+        }
+      }
+
+      next()
+    } catch (error) {
+      console.error("Token verification error:", error)
+      res.status(401).json({ message: "Invalid token" })
+    }
   }
 }
