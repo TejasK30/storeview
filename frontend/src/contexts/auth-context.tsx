@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           ...(profile.role === "store_owner" && { storeId: profile.store.id }), // set storeId only for store_owner
         })
       } catch (error) {
-        console.error("Failed to fetch profile:", error)
+        console.log("Failed to fetch profile:", error)
         setUser(null)
       } finally {
         setLoading(false)

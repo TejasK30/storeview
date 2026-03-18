@@ -25,7 +25,6 @@ export const UpdateProfileForm = ({ onClose }: Props) => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<UpdateProfileFormValues>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {

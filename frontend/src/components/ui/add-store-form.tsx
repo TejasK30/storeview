@@ -10,6 +10,7 @@ import { Input } from "./input"
 import { Label } from "./label"
 import { Textarea } from "./textarea"
 import { addStoreSchema } from "@/lib/schemas"
+import { AxiosError } from "axios"
 
 type AddStoreFormProps = {
   onClose: () => void
@@ -66,11 +67,11 @@ export const AddStoreForm: React.FC<AddStoreFormProps> = ({
       reset()
       onSuccess()
       onClose()
-    } catch (error: any) {
+    } catch (error) {
       const msg =
-        error?.response?.data?.message ||
-        error?.message ||
-        "An unexpected error occurred"
+        error instanceof AxiosError
+          ? (error.response?.data?.message ?? "An unexpected error occurred")
+          : "An unexpected error occurred"
       toast.error(msg)
     }
   }

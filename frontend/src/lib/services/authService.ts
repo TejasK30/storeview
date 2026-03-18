@@ -1,6 +1,7 @@
 import { SignupFormData } from "@/components/ui/signup-form"
 import { api } from "./api"
 import { loginFormType } from "@/components/ui/login-form"
+import { AxiosError } from "axios"
 
 export const register = async (data: SignupFormData) => {
   try {
@@ -17,10 +18,11 @@ export const register = async (data: SignupFormData) => {
         message: "Unexpected response status",
       }
     }
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error instanceof AxiosError ? error : null
     return {
       success: false,
-      message: error?.response?.data?.message || "Registration failed",
+      message: axiosError?.response?.data?.message ?? "Registration failed",
       error,
     }
   }
@@ -42,10 +44,11 @@ export const login = async (data: loginFormType) => {
         message: "Unexpected response status",
       }
     }
-  } catch (error: any) {
+  } catch (error) {
+    const axiosError = error instanceof AxiosError ? error : null
     return {
       success: false,
-      message: error?.response?.data?.message || "Login failed",
+      message: axiosError?.response?.data?.message ?? "Login failed",
       error,
     }
   }
@@ -58,7 +61,10 @@ export const getProfile = async () => {
     })
 
     return res.data.user
-  } catch (error: any) {
-    throw new Error(error?.response?.data?.message || "Failed to fetch profile")
+  } catch (error) {
+    if (error instanceof AxiosError && error.response?.status === 401) {
+      return null
+    }
+    console.log(error)
   }
 }

@@ -17,65 +17,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useAuthContext } from "@/contexts/auth-context"
-import { api } from "@/lib/services/api"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
-import { UpdateProfileForm } from "./UpdateProfileForm"
 import { ChevronDown } from "lucide-react"
-
-type UpdateUserPayload = {
-  name: string
-  email: string
-  password?: string
-}
+import Link from "next/link"
+import { useState } from "react"
+import { UpdateProfileForm } from "./UpdateProfileForm"
 
 export default function Navbar() {
   const { user, logout, loading } = useAuthContext()
-  const pathname = usePathname()
-  const queryClient = useQueryClient()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   const initial = user?.name?.charAt(0).toUpperCase() ?? ""
-
-  const [name, setName] = useState(user?.name || "")
-  const [email, setEmail] = useState(user?.email || "")
-  const [password, setPassword] = useState("")
-
-  const updateUserMutation = useMutation({
-    mutationFn: async (data: UpdateUserPayload) => {
-      const res = await api.put("/auth/updateprofile", data)
-      return res.data
-    },
-    onSuccess: () => {
-      toast.success("User updated successfully!")
-      queryClient.invalidateQueries({ queryKey: ["user"] })
-      setPassword("")
-      setIsProfileOpen(false)
-    },
-    onError: () => {
-      toast.error("Failed to update user.")
-    },
-  })
-
-  const handleUpdate = () => {
-    updateUserMutation.mutate({
-      name,
-      email,
-      ...(password && { password }),
-    })
-  }
 
   const handleLogOut = async () => {
     await logout()
   }
 
   const handleProfileClick = () => {
-    setName(user?.name || "")
-    setEmail(user?.email || "")
-    setPassword("")
     setIsProfileOpen(true)
   }
 

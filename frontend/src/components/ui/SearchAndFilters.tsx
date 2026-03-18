@@ -106,9 +106,8 @@ export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
       <Select
         value={filters.sortByRating}
         onValueChange={(value) =>
-          setFilters((prev) => ({ ...prev, sortByRating: value }))
-        }
-      >
+          setFilters({ ...(filters as StoreFilters), sortByRating: value }) 
+        }      >
         <SelectTrigger className="w-52">
           <SelectValue placeholder="Sort by rating" />
         </SelectTrigger>

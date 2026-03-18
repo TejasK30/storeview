@@ -5,6 +5,7 @@ import {
   Review,
 } from "../types"
 import { api } from "./api"
+import { AxiosError } from "axios"
 
 export async function getStats() {
   const response = await api.get("/admin/stats")
@@ -27,9 +28,7 @@ export async function getStoreRatings(
 }
 
 // get dashboard summary for owner
-export async function getStoreDashboardSummary(
-  storeId: string
-): Promise<DashboardSummary> {
+export async function getStoreDashboardSummary(): Promise<DashboardSummary> {
   const res = await api.get(`/store/overview`)
   return res.data
 }
@@ -39,16 +38,21 @@ export async function getStores({
   search = "",
   page = 1,
   limit = 10,
+  sortByRating
 }: {
   search?: string
   page?: number
   limit?: number
+  sortByRating?: string
 }): Promise<StoresResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
     ...(search && { search }),
+    ...(sortByRating && { sortByRating }),
   })
+
+  console.log(sortByRating)
 
   const res = await api.get(`/store/getstores?${params}`)
   return res.data
@@ -79,18 +83,20 @@ export const submitRating = async (
     })
 
     return res.data
-  } catch (error: any) {
-    const message = error.response?.data?.message || "Failed to submit rating"
+  } catch (error) {
+    const message =
+      error instanceof AxiosError
+        ? (error.response?.data?.message ?? "Failed to submit rating")
+        : "Failed to submit rating"
     throw new Error(message)
   }
 }
 
-//update rating
+// update rating
 export const updateRating = async (
   reviewId: number,
   rating: number,
-  comment?: string
-): Promise<any> => {
+): Promise<{ success: boolean; message: string }> => {
   const response = await api.put(`/store/reviews/edit`, {
     reviewId,
     rating,

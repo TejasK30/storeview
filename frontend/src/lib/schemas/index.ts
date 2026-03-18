@@ -86,7 +86,7 @@ export const AddUserSchema = z
 export const updateProfileSchema = z.object({
   name: nameSchema,
   email: z.string().email("Invalid email address"),
-  password: passwordSchema.optional(),
+  password: passwordSchema.optional().or(z.literal("")).transform((val) => (val === "" ? undefined : val)),
 })
 
 export const addStoreSchema = z.object({

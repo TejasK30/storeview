@@ -43,7 +43,7 @@ export default function SignupForm({
     if (user) {
       router.push(`/dashboard/${user.role}`)
     }
-  }, [user])
+  }, [user, router])
 
   const {
     register,

@@ -1,6 +1,5 @@
 "use client"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,17 +10,18 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { z } from "zod"
-import { loginFormSchema } from "@/lib/schemas"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { login, getProfile } from "@/lib/services/authService"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { useAuthContext } from "@/contexts/auth-context"
-import { useEffect, useState } from "react"
 import { useAuth } from "@/hooks/use-auth"
+import { loginFormSchema } from "@/lib/schemas"
+import { getProfile, login } from "@/lib/services/authService"
+import { cn } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 export type loginFormType = z.infer<typeof loginFormSchema>
 
@@ -29,7 +29,7 @@ export default function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const { user, hasRole } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const {
@@ -45,7 +45,7 @@ export default function LoginForm({
     if (user) {
       router.push(`/dashboard/${user.role}`)
     }
-  }, [user])
+  }, [user, router])
 
   const { setUser } = useAuthContext()
 
@@ -55,29 +55,23 @@ export default function LoginForm({
       const res = await login(data)
 
       if (res.success) {
-        try {
-          const profile = await getProfile()
-          setUser({
-            id: profile.id,
-            name: profile.name,
-            email: profile.email,
-            role: profile.role,
-            ...(profile.role === "store_owner" && {
-              storeId: profile.store.id,
-            }),
-          })
-          toast.success(`Success ${res.message}`)
-          router.push(`/dashboard/${res.role}`)
-        } catch (profileError) {
-          console.error("Failed to fetch profile:", profileError)
-          toast.error("Login successful but failed to load profile")
-          router.push(`/dashboard/${res.role}`)
-        }
+        const profile = await getProfile()
+        setUser({
+          id: profile.id,
+          name: profile.name,
+          email: profile.email,
+          role: profile.role,
+          ...(profile.role === "store_owner" && {
+            storeId: profile.store.id,
+          }),
+        })
+        toast.success(`${res.message}`)
+        router.push(`/dashboard/${res.role}`)
       } else {
         toast.error(`Error ${res.message}`)
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      console.error("Login error:", error)
       toast.error("An error occurred during login")
     } finally {
       setIsLoading(false)

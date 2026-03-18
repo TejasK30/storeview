@@ -38,7 +38,7 @@ const RatingModal = ({
       onClose()
       setRating(0)
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(`${error.message}`)
     },
   })

@@ -1,22 +1,21 @@
 "use client"
 
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import Navbar from "@/components/ui/Navbar"
+import { Pagination } from "@/components/ui/pagination"
+import RatingModal from "@/components/ui/RatingModal"
 import { MyReviews } from "@/components/ui/Reviews"
 import { StoreCard } from "@/components/ui/storecard"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Navbar from "@/components/ui/Navbar"
-import { useAuthContext } from "@/contexts/auth-context"
+import { useAuth } from "@/hooks/use-auth"
+import { useDebounce } from "@/hooks/useDebounce"
 import { getStores, getUserReviews } from "@/lib/services/storeService"
 import { Store } from "@/lib/types"
-import RatingModal from "@/components/ui/RatingModal"
-import { useDebounce } from "@/hooks/useDebounce"
-import { Button } from "@/components/ui/button"
-import { Pagination } from "@/components/ui/pagination"
-import { useAuth } from "@/hooks/use-auth"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 const DEFAULT_LIMIT = 10
 
@@ -29,7 +28,7 @@ export default function UserDashboard() {
     if (!authLoading && (!user || !hasRole("user"))) {
       router.replace("/login")
     }
-  }, [user, hasRole, authLoading])
+  }, [user, hasRole, authLoading, router])
   const [activeTab, setActiveTab] = useState<"myReviews" | "browse">(
     "myReviews"
   )
@@ -96,7 +95,7 @@ export default function UserDashboard() {
       <Navbar />
       <h1 className="text-3xl font-bold">User Dashboard</h1>
 
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "myReviews" | "browse")}>
         <TabsList className="grid grid-cols-2 w-full">
           <TabsTrigger value="myReviews">My Reviews</TabsTrigger>
           <TabsTrigger value="browse">Browse & Review Stores</TabsTrigger>

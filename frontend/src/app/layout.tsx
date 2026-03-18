@@ -23,11 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
+      <Toaster />
         <QueryProvider>
           <AuthProvider>{children}</AuthProvider>
         </QueryProvider>
       </body>
-      <Toaster />
     </html>
   )
 }

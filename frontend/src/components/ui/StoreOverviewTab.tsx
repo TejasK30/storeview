@@ -37,7 +37,7 @@ export const StoreOverview: React.FC<StoreOverviewProps> = ({
           Welcome{userName ? `, ${userName}` : ""}!
         </CardTitle>
         <CardDescription>
-          Here's a quick overview of your store's performance.
+          Here&apos;s a quick overview of your store&apos;s performance.
         </CardDescription>
       </CardHeader>
 

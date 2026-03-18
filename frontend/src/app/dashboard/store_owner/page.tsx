@@ -23,7 +23,7 @@ export default function StoreOwnerDashboard() {
     if (!authLoading && (!user || !hasRole("store_owner"))) {
       router.replace("/login")
     }
-  }, [user, hasRole, authLoading])
+  }, [user, hasRole, authLoading, router])
 
   const [activeTab, setActiveTab] = useState("overview")
   const [page, setPage] = useState(1)
@@ -35,7 +35,7 @@ export default function StoreOwnerDashboard() {
     error: summaryError,
   } = useQuery({
     queryKey: ["store-dashboard-summary", user?.id],
-    queryFn: () => getStoreDashboardSummary(user?.id ?? ""),
+    queryFn: () => getStoreDashboardSummary(),
     enabled: !!user?.id,
   })
 

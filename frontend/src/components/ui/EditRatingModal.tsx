@@ -40,19 +40,17 @@ export const EditRatingModal: React.FC<EditRatingModalProps> = ({
     mutationFn: ({
       reviewId,
       rating,
-      comment,
     }: {
       reviewId: number
       rating: number
-      comment?: string
-    }) => updateRating(reviewId, rating, comment),
+    }) => updateRating(reviewId, rating),
     onSuccess: () => {
       toast.success("Rating updated successfully!")
       queryClient.invalidateQueries({ queryKey: ["myReviews"] })
       queryClient.invalidateQueries({ queryKey: ["stores"] })
       onClose()
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(`Failed to update rating: ${error.message}`)
     },
   })
@@ -69,7 +67,6 @@ export const EditRatingModal: React.FC<EditRatingModalProps> = ({
     updateRatingMutation.mutate({
       reviewId: Number(review.id),
       rating,
-      comment: comment.trim() || undefined,
     })
   }
 

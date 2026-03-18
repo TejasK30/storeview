@@ -25,6 +25,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { useDebounce } from "@/hooks/useDebounce"
 import { getUsers } from "@/lib/services/adminService"
 import { getStats, getStores } from "@/lib/services/storeService"
+import { Store, User } from "@/lib/types"
 
 export default function AdminDashboard() {
   const { user, hasRole, loading: authLoading } = useAuth()
@@ -55,7 +56,7 @@ export default function AdminDashboard() {
     if (!authLoading && (!user || !hasRole("system_admin"))) {
       router.replace("/login")
     }
-  }, [user, hasRole, authLoading])
+  }, [user, hasRole, authLoading, router])
 
   // get dashboard stats query
   const { data: statsData, refetch: refetchStats } = useQuery({
@@ -93,12 +94,13 @@ export default function AdminDashboard() {
     isLoading: isStoresLoading,
     refetch: refetchStores,
   } = useQuery({
-    queryKey: ["stores", debouncedStoreSearch, storePage],
+    queryKey: ["stores", debouncedStoreSearch, storePage, storeFilters],
     queryFn: () =>
       getStores({
         search: debouncedStoreSearch,
         page: storePage,
         limit: 10,
+        ...(storeFilters.sortByRating && { sortByRating: storeFilters.sortByRating }),
       }),
     placeholderData: keepPreviousData,
     enabled: true,
@@ -161,7 +163,7 @@ export default function AdminDashboard() {
                         Updating...
                       </div>
                     )}
-                    {usersData.users.map((user: any) => (
+                    {usersData.users.map((user: User) => (
                       <UserCard key={user.id} user={user} />
                     ))}
                   </div>
@@ -200,7 +202,7 @@ export default function AdminDashboard() {
               ) : storesData && storesData?.stores?.length > 0 ? (
                 <>
                   <div className="space-y-4">
-                    {storesData.stores.map((store: any) => (
+                    {storesData.stores.map((store: Store) => (
                       <StoreCard key={store.id} store={store} />
                     ))}
                   </div>
