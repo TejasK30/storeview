@@ -4,7 +4,7 @@ A full-stack web application for managing stores, users, and reviews, featuring 
 
 ## Tech Stack
 
-- **Frontend:** Next.js, React 19, Tailwind CSS, ShadCN UI, React Query, Zod, Axios, React Hook Form,
+- **Frontend:** Next.js, React 19, Tailwind CSS, ShadCN UI, React Query, Zod, Axios, React Hook Form
 - **Backend:** Node.js, Express.js, TypeScript, Prisma ORM, JWT, Bcrypt, Dotenv, Cookie Parser, CORS
 - **Database:** PostgreSQL (managed via Prisma)
 
@@ -18,76 +18,95 @@ A full-stack web application for managing stores, users, and reviews, featuring 
 - Admin dashboard with statistics
 - Responsive UI with modern components
 
-## Installation
+---
 
-### Prerequisites
+## Prerequisites
 
-- Node.js (v18+ recommended)
-- pnpm (v8+)
-- PostgreSQL database
+Make sure you have the following installed before proceeding:
 
-### Setup
+- [Node.js](https://nodejs.org/) v18+
+- [pnpm](https://pnpm.io/) v8+
+- [PostgreSQL](https://www.postgresql.org/) running locally (or a remote instance)
 
-1. **Clone the repository:**
+---
 
-   ```sh
-   git clone  https://github.com/TejasK30/storeview.git
-   ```
+## Getting Started
 
-   ```sh
-   cd storeview
-   ```
+### 1. Clone the repository
 
-2. **Install dependencies:**
-
-   ```sh
-   cd backend
-   pnpm install
-
-   cd frontend
-   pnpm install
-   ```
-
-3. **Configure environment variables:**
-
-   - Copy `.env.example` to `.env` in backend and fill in the required values (see below).
-
-- Environment Variables
-
-Create a `.env` file in the backend directory with the following:
-
+```sh
+git clone https://github.com/TejasK30/storeview.git
+cd storeview
 ```
-DATABASE_URL=postgresql://<user>:<password>localhost:5432/<db>
+
+### 2. Set up the Backend
+
+```sh
+cd backend
+pnpm install
+```
+
+Create a `.env` file inside the `backend` directory:
+
+```sh
+cp .env.example .env
+```
+
+Fill in the values:
+
+```env
+DATABASE_URL=postgresql://<user>:<password>@localhost:5432/<dbname>
 JWT_SECRET=your_jwt_secret
+PORT=3000
 ```
 
-4. **Set up the database:**
+> Make sure your PostgreSQL server is running and the database exists before the next step.
+> You can create the database manually:
+> ```sh
+> psql -U <user> -c "CREATE DATABASE <dbname>;"
+> ```
+
+Generate the Prisma client and run migrations:
 
 ```sh
-cd backend
-pnpm generate
-pnpm migrate
+pnpm prisma generate
+pnpm prisma migrate deploy
 ```
 
-## Running the Project
-
-### Backend
+Start the backend dev server:
 
 ```sh
-cd backend
 pnpm dev
 ```
 
-- Runs TypeScript in watch mode and starts the server with nodemon.
+The backend runs on `http://localhost:5000` by default.
 
-### Frontend
+---
+
+### 3. Set up the Frontend
+
+Open a new terminal:
 
 ```sh
 cd frontend
+pnpm install
+```
+
+Create a `.env.local` file inside the `frontend` directory:
+
+```env
+NODE_API_URL=http://localhost:5000
+```
+
+Start the frontend dev server:
+
+```sh
 pnpm dev
 ```
 
-- Starts the Next.js development server.
+The frontend runs on `http://localhost:3000` by default.
+
+---
 
 ## Folder Structure
 
@@ -116,52 +135,57 @@ storeview/
 └── README.md
 ```
 
+---
+
 ## API Endpoints Summary
 
 ### Auth Routes (`/api/auth`)
 
-- `POST /register` — Register a new user
-- `POST /login` — Login user
-- `GET /profile` — Get current user profile
-- `GET /logout` — Logout user
-- `PUT /updateprofile` — Update user profile
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/register` | Register a new user |
+| POST | `/login` | Login user |
+| GET | `/profile` | Get current user profile |
+| GET | `/logout` | Logout user |
+| PUT | `/profile` | Update user profile |
+
+### User Routes (`/api/users`)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/` | List all users (system_admin only) |
+| POST | `/` | Add a new user (system_admin only) |
 
 ### Admin Routes (`/api/admin`)
 
-- `GET /stats` — Get dashboard statistics
-- `GET /users` — List all users
-- `GET /stores` — List all stores
-- `POST /users` — Add a new user
-- `POST /stores` — Add a new store
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/stats` | Get dashboard statistics (system_admin only) |
 
 ### Store Routes (`/api/store`)
 
-- `GET /overview` — Store overview for owner
-- `GET /:storeId/ratings` — Get ratings for a store
-- `GET /getstores` — List all stores
-- `GET /reviews/user/:userId` — Get reviews by user
-- `POST /reviews/submit` — Submit a new rating
-- `PUT /reviews/edit` — Edit an existing rating
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/overview` | Store overview for owner (store_owner only) |
+| GET | `/` | List all stores with pagination, search, and sorting |
+| POST | `/` | Add a new store (system_admin only) |
 
-### Additional Notes for Storeview
+### Review Routes (`/api/review`)
 
-- **Project Structure:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/store/:storeId` | Get ratings for a specific store |
+| GET | `/user/:userId` | Get reviews by user ID |
+| POST | `/` | Submit a new rating |
+| PUT | `/` | Update an existing rating |
 
-  - The project uses separate `backend` and `frontend` folders.
+---
 
-- **Backend:**
+## Notes
 
-  - Uses Prisma ORM for database access.
-  - Environment variables are loaded via `dotenv`.
-  - JWT authentication is implemented in `middlewares/auth.ts`.
-  - All API endpoints are prefixed with `/api`.
-
-- **Frontend:**
-
-  - Built with Next.js and React.
-  - Uses React Query for data fetching and caching.
-  - UI components are built with Shadcn UI and Tailwind CSS.
-  - Forms use React Hook Form and Zod for validation.
-
-- **API Integration:**
-  - API services are defined in `frontend/src/lib/services/`.
+- The backend and frontend must both be running at the same time during development.
+- All backend API endpoints are prefixed with `/api`.
+- JWT tokens are stored in cookies and handled via the auth middleware.
+- React Query is used on the frontend for data fetching and caching.
+- Forms are validated using React Hook Form + Zod.
+- UI is built with ShadCN UI and Tailwind CSS.
